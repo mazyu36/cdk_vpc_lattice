@@ -1,16 +1,26 @@
+import { LambdaConstruct } from './construct/lambdaConstruct';
+import { Ec2Construct } from './construct/ec2Construct';
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import { VpcConstruct } from './construct/vpcConstruct';
+import { VpcLatticeConstruct } from './construct/vpcLatticeConstruct';
 
 export class CdkVpcLatticeStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    const vpcConstruct = new VpcConstruct(this, 'VpcConstruct', {})
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'CdkVpcLatticeQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    const ec2Construct = new Ec2Construct(this, 'Ec2Construct', {
+      vpcConstruct
+    })
+
+    const lambdaConstruct = new LambdaConstruct(this, 'LambdaConstruct', {})
+
+    new VpcLatticeConstruct(this, 'VpcLatticeConstruct', {
+      vpcConstruct,
+      ec2Construct,
+      lambdaConstruct
+    })
   }
 }

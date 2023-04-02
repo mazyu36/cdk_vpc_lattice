@@ -1,14 +1,31 @@
-# Welcome to your CDK TypeScript project
+#  VPC Lattice Sample(AWS CDK)
+VPC LatticeをAWS CDK（L1 Construct）で実装したサンプル。
+## アーキテクチャ
+![](architecture.drawio.svg)
 
-This is a blank project for CDK development with TypeScript.
+サービスとしては以下。
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+* EC2（Client）：クライアント側のEC2サーバー。ここから他のサービスにリクエストを行い通信ができるか確認する。
+* Lambda：通信先のサービス（1つ目）。HTTPSで通信する。アクセスログはCW Logsに出力。
+* EC2（Server）：80番ポートで公開。HTTPで通信する。アクセスログはS3バケットに出力。
 
-## Useful commands
+## プロジェクト構成
+```bash
+.
+├── cdk_vpc_lattice-stack.ts # Stackを定義
+└── construct # Constructで構造化
+    ├── lambda # Lambdaのコードを格納
+    │   ├── default.py
+    │   ├── first.py
+    │   └── second.py
+    ├── script # EC2 Server構成用のUser Dataを格納
+    │   └── user-data.sh
+    ├── ec2Construct.ts # EC2を定義（Client, Server）
+    ├── lambdaConstruct.ts # Lambdaを定義
+    ├── vpcConstruct.ts # VPCを定義
+    └── vpcLatticeConstruct.ts # VPC Latticeを定義
+```
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+
+## ブログ記事
+[VPC LatticeをAWS CDK（L1 Construct）/ CloudFormationで実装する](https://mazyu36.hatenablog.com/entry/2023/04/03/180347)
